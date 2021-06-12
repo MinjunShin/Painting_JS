@@ -7,6 +7,7 @@ function onMouseMove(event){
   console.log(x,y);
 }
 
+
 function onMouseDown(event) {
   painting = true;
 }
