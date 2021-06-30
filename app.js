@@ -3,6 +3,7 @@ const ctx = canvas.getContext("2d");
 const colors = document.getElementsByClassName("jsColor");
 const range = document.getElementById("jsRange");
 const mode = document.getElementById("jsMode");
+const save = document.getElementById("jsSave");
 const INITIAL_COLOR = "#2c2c2c";
 const CANVAS_SIZE = 700;
 
@@ -12,6 +13,10 @@ ctx.lineWidth = 2.5;
 
 canvas.width = CANVAS_SIZE;
 canvas.height = CANVAS_SIZE;
+
+// 캔버스의 배경색을 하얀색으로 기본지정 
+ctx.fillStyle = "white";
+ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
 let painting = false;
 let filling = false;
@@ -31,16 +36,15 @@ function onMouseMove(event) {
     ctx.beginPath();
     ctx.moveTo(x, y);
   } else {
-    ctx.lineTo(x, y); 
+    ctx.lineTo(x, y);
     ctx.stroke();
   }
 }
 
-function handeRangeChange (event) {
+function handeRangeChange(event) {
   const strokeSize = event.target.value;
-  ctx.lineWidth = strokeSize;  
+  ctx.lineWidth = strokeSize;
 }
-
 
 function handleColorClick(event) {
   const color = event.target.style.backgroundColor;
@@ -50,7 +54,7 @@ function handleColorClick(event) {
 }
 
 function handeModeClick() {
-  if(filling) {
+  if (filling) {
     filling = false;
     mode.innerText = "Fill";
   } else {
@@ -59,12 +63,24 @@ function handeModeClick() {
   }
 }
 
-function handleCanvasClick(){
-  if(filling){
+function handleCanvasClick() {
+  if (filling) {
     ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
   } else {
-
   }
+}
+
+function handleCM (event) {
+  event.preventDefault();
+  console.log(event);
+}
+
+function handleSave() {
+  const image = canvas.toDataURL();
+  const link = document.createElement("a");
+  link.href = image;
+  link.download = "PaintJS[⏯]";
+  link.click();
 }
 
 if (canvas) {
@@ -73,16 +89,23 @@ if (canvas) {
   canvas.addEventListener("mouseup", stopPainting);
   canvas.addEventListener("mouseleave", stopPainting);
   canvas.addEventListener("click", handleCanvasClick);
+  canvas.addEventListener("contextmenu", handleCM);
 }
 
-if(range) {
+if (range) {
   range.addEventListener("input", handeRangeChange);
 }
 
-if(mode) {
+if (mode) {
   mode.addEventListener("click", handeModeClick);
+}
+
+if(save) {
+  save.addEventListener("click", handleSave);
 }
 
 //console.log(Array.from(colors));
 
-Array.from(colors).forEach(color => color.addEventListener("click",handleColorClick));
+Array.from(colors).forEach((color) =>
+  color.addEventListener("click", handleColorClick)
+);
